@@ -3,13 +3,13 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Ask Pupkin</title>
+    <title>AskPupkin</title>
     <link href="static/bootstrap/css/bootstrap.css" rel="stylesheet">
   </head>
   <body>
     <nav class="navbar navbar-expand-lg bg-body-tertiary mb-5">
       <div class="container">
-        <a class="navbar-brand" href="#">Ask Pupkin</a>
+        <a class="navbar-brand" href="#">AskPupkin</a>
 
         <div class="navbarSupportedContent">
           <form role="search">
@@ -20,8 +20,8 @@
         <button class="btn btn-outline-success" type="submit">Ask!</button>
 
         <div class="profile d-flex align-items-center gap-2">
-          <div>
-            <img src="..." class="img-thumbnail" alt="img">
+          <div class="border" style="height: 50px; width: 50px;">
+            <img src="..." class="img-fluid" alt="img">
           </div>
           <div class="profile-content">
             <div class="profile-name">Dr. Pepper</div>
@@ -30,6 +30,11 @@
               <a href="">log out</a>
             </div>
           </div>
+        </div>
+
+        <div class="profile d-flex align-items-center gap-2 d-none">
+          <a href="">log in</a>
+          <a href="">register</a>
         </div>
       </div>
     </nav>
@@ -41,27 +46,27 @@
   
         <aside class="col-3">
           <section class="tags mb-3">
-            <h2>Popular Tags</h2>
+            <h3>Popular Tags</h3>
             <div>
-              <span class="badge text-bg-primary">Primary</span>
-              <span class="badge text-bg-secondary">Secondary</span>
-              <span class="badge text-bg-success">Success</span>
-              <span class="badge text-bg-danger">Danger</span>
-              <span class="badge text-bg-warning">Warning</span>
-              <span class="badge text-bg-info">Info</span>
-              <span class="badge text-bg-light">Light</span>
-              <span class="badge text-bg-dark">Dark</span>
+              <span class="badge text-bg-primary">perl</span>
+              <span class="badge text-bg-secondary">python</span>
+              <span class="badge text-bg-success">TechnoPark</span>
+              <span class="badge text-bg-danger">MySQL</span>
+              <span class="badge text-bg-warning">django</span>
+              <span class="badge text-bg-info">Mail.Ru</span>
+              <span class="badge text-bg-light">Voloshin</span>
+              <span class="badge text-bg-dark">Firefox</span>
             </div>
           </section>
   
           <section class="members">
-            <h2>Best Members</h2>
+            <h3>Best Members</h3>
             <div>
-              <a class="d-block" href="">Member</a>
-              <a class="d-block" href="">Member</a>
-              <a class="d-block" href="">Member</a>
-              <a class="d-block" href="">Member</a>
-              <a class="d-block" href="">Member</a>
+              <a class="d-block" href="">Mr. Freeman</a>
+              <a class="d-block" href="">Dr. House</a>
+              <a class="d-block" href="">Bender</a>
+              <a class="d-block" href="">Queen Victoria</a>
+              <a class="d-block" href="">V. Pupkin</a>
             </div>
           </section>
         </aside>
