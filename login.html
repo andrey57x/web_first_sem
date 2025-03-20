@@ -19,7 +19,7 @@
 
         <button class="btn btn-outline-success" type="submit">Ask!</button>
 
-        <div class="profile d-flex align-items-center gap-2">
+        <div class="profile d-flex align-items-center gap-2  d-none">
           <div class="border" style="height: 50px; width: 50px;">
             <img src="..." class="img-fluid" alt="img">
           </div>
@@ -32,7 +32,7 @@
           </div>
         </div>
 
-        <div class="profile d-flex align-items-center gap-2 d-none">
+        <div class="profile d-flex align-items-center gap-2">
           <a href="">log in</a>
           <a href="">register</a>
         </div>
@@ -42,11 +42,11 @@
       <div class="row justify-content-between">
 
         <section class="col-8 content">
-          <div class="mb-5 d-flex">
-            <h2 class="me-3">Settings:</h2>
-            <h2>Dr. Pepper</h2>
+          <div class="mb-5">
+            <h2>Log In</h2>
           </div>
-          <form class="col-8">
+
+          <form class="col-6">
             <section class="login mb-3">
                 <div class="row g-3 align-items-center justify-content-between">
                     <div class="col-auto">
@@ -54,50 +54,32 @@
                     </div>
                     <div class="col-9">
                       <input type="text" class="form-control" placeholder="Enter your login here...">
+                
                     </div>
                 </div>
             </section>
 
-            <section class="email mb-3">
+            <section class="password mb-3">
                 <div class="row g-3 align-items-center justify-content-between">
                     <div class="col-auto">
-                      <label class="col-form-label">Email</label>
+                      <label class="col-form-label">Password</label>
                     </div>
                     <div class="col-9">
-                      <input type="text" class="form-control" placeholder="Enter your email here...">
-                    </div>
-                </div>
-            </section>
-
-            <section class="nickname mb-3">
-                <div class="row g-3 align-items-center justify-content-between">
-                    <div class="col-auto">
-                      <label class="col-form-label">NickName</label>
-                    </div>
-                    <div class="col-9">
-                      <input type="text" class="form-control" placeholder="Enter your nickname here...">
-                    </div>
-                </div>
-            </section>
-
-            <section class="avatar">
-                <div class="row g-3 justify-content-between">
-                    <div class="col-auto">
-                      <label class="col-form-label">Upload avatar</label>
-                    </div>
-                    <div class="col-9">
-                      <div class="border mb-3" style="height: 200px; width: 200px;">
-                        <img src="..." class="img-fluid" alt="img">
+                      <input type="password" class="form-control is-invalid" placeholder="Enter your password here...">
+                      <div class="invalid-feedback">
+                        Sorry, wrong password!
                       </div>
-                      <input type="file" class="form-control mb-3">
                     </div>
                 </div>
             </section>
 
-            <button class="btn btn-primary offset-3" type="submit">Save</button>
-
-          </form>
-          
+            <div class="mb-3">
+                <button class="btn btn-outline-primary offset-3" type="submit">Log in!</button>
+            </div>
+            <div>
+                <a class="new offset-3">create new account</a>
+            </div>
+            </form>
             
         </section>
   
