@@ -19,7 +19,7 @@
 
         <button class="btn btn-outline-success" type="submit">Ask!</button>
 
-        <div class="profile d-flex align-items-center gap-2">
+        <div class="profile d-flex align-items-center gap-2  d-none">
           <div class="border" style="height: 50px; width: 50px;">
             <img src="..." class="img-fluid" alt="img">
           </div>
@@ -32,7 +32,7 @@
           </div>
         </div>
 
-        <div class="profile d-flex align-items-center gap-2 d-none">
+        <div class="profile d-flex align-items-center gap-2">
           <a href="">log in</a>
           <a href="">register</a>
         </div>
@@ -40,6 +40,7 @@
     </nav>
     <main class="container">
       <div class="row justify-content-between">
+
         <section class="col-8 content">
           <div class="mb-5">
             <h2>New Question</h2>
@@ -52,7 +53,8 @@
                       <label for="input-title" class="col-form-label">Title</label>
                     </div>
                     <div class="col-9">
-                      <input type="text" id="input-title" class="form-control" placeholder="Enter your title here..." required>
+                      <input type="text" id="input-title" class="form-control" placeholder="Enter your title here...">
+                
                     </div>
                 </div>
             </section>
@@ -63,7 +65,7 @@
                       <label for="input-text" class="col-form-label">Text</label>
                     </div>
                     <div class="col-9">
-                        <textarea class="form-control" id="input-text" placeholder="Enter your question here..." rows="5" required></textarea>
+                        <textarea class="form-control" id="input-text" placeholder="Enter your question here..." rows="5"></textarea>
                     </div>
                 </div>
             </section>
@@ -74,7 +76,10 @@
                       <label for="input-tags" class="col-form-label">Tags</label>
                     </div>
                     <div class="col-9">
-                      <input type="text" id="input-tags" class="form-control" placeholder="Enter your tags here..." required>
+                      <input type="text" id="input-tags" class="form-control is-invalid" placeholder="Enter your tags here...">
+                      <div class="invalid-feedback">
+                        Please, write tags.
+                      </div>
                     </div>
                 </div>
             </section>
@@ -82,7 +87,6 @@
             <button class="btn btn-outline-primary offset-3" type="submit">Ask!</button>
             </form>
             
-           
         </section>
   
         <aside class="col-3">
