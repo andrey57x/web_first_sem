@@ -1,0 +1,14 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+<section class="title d-flex align-items-center gap-5 mb-3">
+  <h2>Tag:</h2>
+  <a href="{% url 'tag' tag.name %}"><span class="badge btn text-bg-{{tag.color}}">{{tag.name}}</span></a>
+</section>
+
+{%for question in questions%}
+  {% include 'layouts/single_question.html' %}
+{%endfor%}
+
+{% include 'layouts/pagination.html' %}
+{% endblock %}

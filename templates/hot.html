@@ -1,0 +1,19 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+<section class="title d-flex align-items-center gap-5 mb-3">
+  <h2>Hot Questions</h2>
+  <a href="{% url 'index' %}"> New Questions</a>
+</section>
+
+<section class="questions row gap-3 mb-3">
+  {% for question in questions %}
+    {% include "layouts/single_question.html" %}
+  {% endfor %}
+</section>
+
+<nav aria-label="...">
+  {% include "layouts/pagination.html" %}
+</nav>
+{% endblock %}

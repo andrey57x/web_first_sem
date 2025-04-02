@@ -1,0 +1,58 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AskSafronov</title>
+    <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary mb-5">
+    <div class="container">
+        <a class="navbar-brand" href="{% url 'index' %}">AskSafronov</a>
+
+        <div class="navbarSupportedContent">
+            <form role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+            </form>
+        </div>
+
+        <a href="{% url 'ask' %}"><button class="btn btn-outline-success" type="submit">Ask!</button></a>
+        {% include "layouts/registered_profile.html" %}
+    </div>
+</nav>
+<main class="container">
+    <div class="row">
+        <section class="col-9 content">
+            {% block content %}
+            {% endblock %}
+        </section>
+
+        <aside class="col-3">
+            <section class="tags mb-3">
+                <h3>Popular Tags</h3>
+                <div>
+                    {% for tag in tags %}
+                        <a href="{% url 'tag' tag.name %}"><span class="badge btn text-bg-{{tag.color}}">{{tag.name}}</span></a>
+                    {% endfor %}
+                </div>
+            </section>
+
+            <section class="members">
+                <h3>Best Members</h3>
+                <div>
+                    <a class="d-block" href="">Mr. Freeman</a>
+                    <a class="d-block" href="">Dr. House</a>
+                    <a class="d-block" href="">Bender</a>
+                    <a class="d-block" href="">Queen Victoria</a>
+                    <a class="d-block" href="">V. Pupkin</a>
+                </div>
+            </section>
+        </aside>
+    </div>
+</main>
+
+<script src="{% static 'bootstrap/js/bootstrap.bundle.js' %}"></script>
+</body>
+</html>

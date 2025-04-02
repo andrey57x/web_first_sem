@@ -1,0 +1,49 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="mb-5">
+    <h2>New Question</h2>
+</div>
+
+<form>
+    <section class="title mb-5">
+        <div class="row g-3 align-items-center justify-content-between">
+            <div class="col-auto">
+                <label class="col-form-label">Title</label>
+            </div>
+            <div class="col-9">
+                <input type="text" class="form-control" placeholder="Enter your title here...">
+            </div>
+        </div>
+    </section>
+
+    <section class="text mb-5">
+        <div class="row g-3 justify-content-between">
+            <div class="col-auto">
+                <label class="col-form-label">Text</label>
+            </div>
+            <div class="col-9">
+                <textarea class="form-control" placeholder="Enter your question here..." rows="5"></textarea>
+            </div>
+        </div>
+    </section>
+
+    <section class="tags mb-3">
+        <div class="row g-3 align-items-center justify-content-between">
+            <div class="col-auto">
+                <label class="col-form-label">Tags</label>
+            </div>
+            <div class="col-9">
+                <input type="text" class="form-control is-invalid" placeholder="Enter your tags here...">
+                <div class="invalid-feedback">
+                    Please, write tags.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <button class="btn btn-outline-primary offset-3" type="submit">Ask!</button>
+</form>
+
+{% endblock %}

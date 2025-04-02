@@ -1,0 +1,26 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+
+{% block content %}
+    {% include "layouts/single_question.html" %}
+
+    <hr>
+
+    <section class="questions row gap-3 mb-3">
+        {% for answer in answers %}
+            {% include "layouts/answer.html" %}
+        {% endfor %}
+    </section>
+
+    {% include "layouts/pagination.html" %}
+
+    <hr>
+
+    <section class="your-answer">
+        <div class="mb-3">
+            <textarea class="form-control" placeholder="Enter your answer here..." rows="5"></textarea>
+        </div>
+        <button class="btn btn-primary" type="submit">Answer</button>
+    </section>
+{% endblock %}

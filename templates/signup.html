@@ -1,0 +1,80 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="mb-5 d-flex">
+    <h2 class="me-3">Registration</h2>
+</div>
+
+<form class="col-8">
+    <section class="login mb-3">
+        <div class="row g-3 align-items-center justify-content-between">
+            <div class="col-auto">
+                <label class="col-form-label">Login</label>
+            </div>
+            <div class="col-9">
+                <input type="text" class="form-control" placeholder="Enter your login here...">
+            </div>
+        </div>
+    </section>
+
+    <section class="email mb-3">
+        <div class="row g-3 align-items-center justify-content-between">
+            <div class="col-auto">
+                <label class="col-form-label">Email</label>
+            </div>
+            <div class="col-9">
+                <input type="text" class="form-control is-invalid" placeholder="Enter your email here...">
+                <div class="invalid-feedback">
+                    Sorry, this email address already registered!
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="nickname mb-3">
+        <div class="row g-3 align-items-center justify-content-between">
+            <div class="col-auto">
+                <label class="col-form-label">NickName</label>
+            </div>
+            <div class="col-9">
+                <input type="text" class="form-control" placeholder="Enter your nickname here...">
+            </div>
+        </div>
+    </section>
+
+    <section class="password mb-3">
+        <div class="row g-3 align-items-center justify-content-between">
+            <div class="col-auto">
+                <label class="col-form-label">Password</label>
+            </div>
+            <div class="col-9">
+                <input type="password" class="form-control" placeholder="Enter your password here...">
+            </div>
+        </div>
+    </section>
+
+    <section class="repeat-password mb-3">
+        <div class="row g-3 align-items-center justify-content-between">
+            <div class="col-auto">
+                <label class="col-form-label">Repeat password</label>
+            </div>
+            <div class="col-9">
+                <input type="password" class="form-control" placeholder="Repeat your password here...">
+            </div>
+        </div>
+    </section>
+
+    <section class="avatar">
+        <div class="row g-3 justify-content-between">
+            <div class="col-auto">
+                <label class="col-form-label">Upload avatar</label>
+            </div>
+            <div class="col-9">
+                <input type="file" class="form-control mb-3">
+            </div>
+        </div>
+    </section>
+    <button class="btn btn-primary offset-3" type="submit">Register!</button>
+</form>
+{% endblock %}
