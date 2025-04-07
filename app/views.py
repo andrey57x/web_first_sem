@@ -1,52 +1,10 @@
 from django.shortcuts import render
 from django.core.paginator import Paginator
+from app.models import Question
+from app.models import Answer
+from app.models import Tag
 
-POPULAR_TAGS = [{
-    'name': 'python',
-    'color': 'primary'
-}, {
-    'name': 'django',
-    'color': 'secondary'
-}, {
-    'name': 'TechnoPark',
-    'color': 'success'
-}, {
-    'name': 'Voloshin',
-    'color': 'danger'
-}, {
-    'name': 'black-jack',
-    'color': 'warning'
-}, {
-    'name': 'bender',
-    'color': 'info'
-}, {
-    'name': 'Mail.Ru',
-    'color': 'light'
-}, {
-    'name': 'Firefox',
-    'color': 'dark'
-}]
-
-QUESTIONS = [
-    {
-        "title": f"Title {i}",
-        "id": i,
-        "text": f"This is text for question # {i}",
-        'img_path': 'img/kitten.jpg',
-        'tags': [POPULAR_TAGS[(3 * i) % len(POPULAR_TAGS)], POPULAR_TAGS[(3 * i + 1) % len(POPULAR_TAGS)],
-                 POPULAR_TAGS[(3 * i + 2) % len(POPULAR_TAGS)]]
-    } for i in range(30)
-]
-
-ANSWERS = [
-    {
-        "title": f"Answer title {i}",
-        "id": i,
-        "text": f"This is text for answer # {i}",
-        'img_path': 'img/puppy.jpg'
-    } for i in range(30)
-]
-
+PER_PAGE = 4
 
 def paginate(objects_list, request, per_page=10):
     paginator = Paginator(objects_list, per_page)
@@ -64,41 +22,45 @@ def paginate(objects_list, request, per_page=10):
 
 
 def index(request):
-    page = paginate(QUESTIONS, request, 4)
-    return render(request, 'index.html', context={'questions': page.object_list, 'page': page, 'tags': POPULAR_TAGS})
+    questions = Question.objects.all()
+    page = paginate(questions, request, PER_PAGE)
+    return render(request, 'index.html', context={'questions': page.object_list, 'page': page, 'tags': Tag.objects.get_popular()})
 
 
 def hot(request):
-    q = QUESTIONS.copy()
-    q.reverse()
-    page = paginate(q, request, 4)
-    return render(request, 'hot.html', context={'questions': page.object_list, 'page': page, 'tags': POPULAR_TAGS})
+    questions = Question.objects.get_hot()
+    page = paginate(questions, request, PER_PAGE)
+    return render(request, 'hot.html', context={'questions': page.object_list, 'page': page, 'tags': Tag.objects.get_popular()})
 
 
 def question(request, question_id):
-    page = paginate(ANSWERS, request, 3)
+    question = Question.objects.get(id=question_id)
+    answers = Answer.objects.filter(question=question)
+    page = paginate(answers, request, PER_PAGE-1)
     return render(request, 'question.html',
-                  context={'question': QUESTIONS[question_id], 'answers': page.object_list, 'page': page,
-                           'tags': POPULAR_TAGS})
+                  context={'question': question, 'answers': page.object_list, 'page': page,
+                           'tags': Tag.objects.get_popular()})
 
 
 def tag(request, tag_name):
-    page = paginate(QUESTIONS, request, 4)
-    return render(request, 'tag.html', context={'tag': [tag for tag in POPULAR_TAGS if tag['name'] == tag_name][0],
-                                                'questions': page.object_list, 'page': page, 'tags': POPULAR_TAGS})
+    tag = Tag.objects.get(name=tag_name)
+    questions = Question.objects.filter(tags=tag)
+    page = paginate(questions, request, PER_PAGE)
+    return render(request, 'tag.html', context={'tag': tag,
+                                                'questions': page.object_list, 'page': page, 'tags': Tag.objects.get_popular()})
 
 
 def login(request):
-    return render(request, 'login.html', context={'tags': POPULAR_TAGS})
+    return render(request, 'login.html', context={'tags': Tag.objects.get_popular()})
 
 
 def signup(request):
-    return render(request, 'signup.html', context={'tags': POPULAR_TAGS})
+    return render(request, 'signup.html', context={'tags': Tag.objects.get_popular()})
 
 
 def ask(request):
-    return render(request, 'ask.html', context={'tags': POPULAR_TAGS})
+    return render(request, 'ask.html', context={'tags': Tag.objects.get_popular()})
 
 
 def settings(request):
-    return render(request, 'settings.html', context={'tags': POPULAR_TAGS})
+    return render(request, 'settings.html', context={'tags': Tag.objects.get_popular()})

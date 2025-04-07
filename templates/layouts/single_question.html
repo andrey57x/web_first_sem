@@ -18,9 +18,11 @@
             <div class="d-flex gap-3">
               <p>Tags:</p>
               <div class="tags gap-2">
-                {% for tag in question.tags %}
-                  <a href="{% url 'tag' tag.name %}"><span class="badge btn text-bg-{{tag.color}}">{{tag.name}}</span></a>
+                {% with 'primary secondary success danger warning info light dark' as lst %}
+                {% for i in len(question.tags) %}
+                  <a href="{% url 'tag' tags.i.name %}"><span class="badge btn text-bg-{{ lst.split.(i % 8) }}">{{tags.i.name}}</span></a>
                 {% endfor %}
+                {% endwith %}
               </div>
             </div>
           </footer>
