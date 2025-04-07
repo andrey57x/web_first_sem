@@ -18,8 +18,9 @@
             <div class="d-flex gap-3">
               <p>Tags:</p>
               <div class="tags gap-2">
-                <a href="{% url 'tag' 'black-jack' %}"><span class="badge btn text-bg-warning">black-jack</span></a>
-                <a href="{% url 'tag' 'bender' %}"><span class="badge btn text-bg-info">bender</span></a>
+                {% for tag in question.tags %}
+                  <a href="{% url 'tag' tag.name %}"><span class="badge btn text-bg-{{tag.color}}">{{tag.name}}</span></a>
+                {% endfor %}
               </div>
             </div>
           </footer>
