@@ -35,7 +35,7 @@ def hot(request):
 
 def question(request, question_id):
     question = Question.objects.get(id=question_id)
-    answers = Answer.objects.filter(question=question)
+    answers = Answer.objects.get_hot().filter(question=question)
     page = paginate(answers, request, PER_PAGE-1)
     return render(request, 'question.html',
                   context={'question': question, 'answers': page.object_list, 'page': page,

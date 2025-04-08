@@ -98,7 +98,7 @@ class Answer(models.Model):
 # 1-1 with User
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    avatar = models.ImageField(upload_to='static/img/avatar', blank=True, null=True)
+    avatar = models.CharField(max_length=100, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -106,10 +106,10 @@ class Profile(models.Model):
 
 # 1-M with Question, 1-1 with User
 class QuestionLike(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='question_likes')
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='question_likes', db_index=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    value = models.IntegerField(default=0)
+    value = models.IntegerField(default=0, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -124,9 +124,9 @@ class QuestionLike(models.Model):
 # 1-M with Answer, 1-1 with User
 class AnswerLike(models.Model):
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='answer_likes')
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    value = models.IntegerField(default=0)
+    value = models.IntegerField(default=0, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
