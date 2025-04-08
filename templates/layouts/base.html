@@ -33,11 +33,9 @@
             <section class="tags mb-3">
                 <h3>Popular Tags</h3>
                 <div>
-                    {% with 'primary secondary success danger warning info light dark' as lst %}
-                    {% for i in range(8) %}
-                        <a href="{% url 'tag' tags.i.name %}"><span class="badge btn text-bg-{{ lst.split.i }}">{{tags.i.name}}</span></a>
+                    {% for tag in tags %}
+                    <a href="{% url 'tag' tag.name%}"><span class="badge btn text-bg-{{tag.color}}">{{ tag.name }}</span></a>
                     {% endfor %}
-                    {% endwith %}
                 </div>
             </section>
 

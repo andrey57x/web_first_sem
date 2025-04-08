@@ -22,7 +22,7 @@ def paginate(objects_list, request, per_page=10):
 
 
 def index(request):
-    questions = Question.objects.all()
+    questions = Question.objects.get_new()
     page = paginate(questions, request, PER_PAGE)
     return render(request, 'index.html', context={'questions': page.object_list, 'page': page, 'tags': Tag.objects.get_popular()})
 

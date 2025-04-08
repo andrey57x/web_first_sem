@@ -3,7 +3,7 @@
 {% block content %}
 <section class="title d-flex align-items-center gap-5 mb-3">
   <h2>Tag:</h2>
-  <a href="{% url 'tag' tag.name %}"><span class="badge btn text-bg-primary">{{tag.name}}</span></a>
+  <a href="{% url 'tag' tag.name %}"><span class="badge btn text-bg-{{tag.color}}">{{tag.name}}</span></a>
 </section>
 
 {%for question in questions%}

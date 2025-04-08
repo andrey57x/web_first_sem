@@ -1,19 +1,33 @@
 from django.db import models
+from django.db.models import Sum, Value, Count
+from django.db.models.functions import Coalesce
 from django.contrib.auth.models import User
+
+HOT_TAGS_NUMBER = 8
 
 
 # Create your models here.
 
 class QuestionManager(models.Manager):
     def get_new(self):
-        return self.all()
+        return super().all()
 
     def get_hot(self):
-        return self.order_by('-rating')
+        return self.annotate(popularity=Coalesce(Sum('question_likes__value'), Value(0))).order_by('-popularity')
+
 
 class TagManager(models.Manager):
     def get_popular(self):
-        return self.order_by('-popularity')
+        return self.annotate(popularity=Coalesce(Count('questions'), Value(0))).order_by('-popularity')[:HOT_TAGS_NUMBER]
+
+
+class AnswerManager(models.Manager):
+    def get_new(self):
+        return super().all()
+
+    def get_hot(self):
+        return self.annotate(popularity=Coalesce(Sum('answer_likes__value'), Value(0))).order_by('-popularity')
+
 
 # M-M with Question
 class Tag(models.Model):
@@ -24,9 +38,13 @@ class Tag(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return self.name
+
     @property
-    def popularity(self):
-        return Question.objects.filter(tags=self).count()
+    def color(self):
+        colors = ["primary", "secondary", "success", "danger", "warning", "info", "light", "dark"]
+        return colors[((hash(self.name)) % (len(colors) + 1)) % len(colors)]
 
 
 # M-M with Tag, 1-M with Answer, 1-M with User
@@ -36,7 +54,7 @@ class Question(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, blank=True, related_name='questions')
 
-    title = models.CharField(max_length=50)
+    title = models.CharField(max_length=50, unique=True)
     text = models.TextField(max_length=1000)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -44,15 +62,25 @@ class Question(models.Model):
 
     @property
     def rating(self):
-        return sum(QuestionLike.objects.filter(question=self).values_list('value', flat=True))
+        r = self.question_likes.all().aggregate(rating=Sum('value'))['rating']
+        return r if r else 0
+
+    @property
+    def answers_count(self):
+        return self.answers.count()
 
     class Meta:
         ordering = ['-created_at']
 
+    def __str__(self):
+        return self.title
+
 
 # 1-M with Question, 1-M with User
 class Answer(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    objects = AnswerManager()
+
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='answers')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
 
     text = models.TextField(max_length=1000)
@@ -63,15 +91,13 @@ class Answer(models.Model):
 
     @property
     def rating(self):
-        return sum(AnswerLike.objects.filter(answer=self).values_list('value', flat=True))
-
-    class Meta:
-        ordering = ['-created_at']
+        r = self.answer_likes.all().aggregate(rating=Sum('value'))['rating']
+        return r if r else 0
 
 
 # 1-1 with User
 class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     avatar = models.ImageField(upload_to='static/img/avatar', blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
@@ -80,7 +106,7 @@ class Profile(models.Model):
 
 # 1-M with Question, 1-1 with User
 class QuestionLike(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='question_likes')
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     value = models.IntegerField(default=0)
@@ -97,7 +123,7 @@ class QuestionLike(models.Model):
 
 # 1-M with Answer, 1-1 with User
 class AnswerLike(models.Model):
-    answer = models.ForeignKey(Answer, on_delete=models.CASCADE)
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='answer_likes')
     user = models.OneToOneField(User, on_delete=models.CASCADE)
 
     value = models.IntegerField(default=0)
