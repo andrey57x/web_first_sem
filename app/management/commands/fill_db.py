@@ -30,7 +30,7 @@ class Command(BaseCommand):
         self.generate_answers(ratio * 100)
         self.generate_question_likes(ratio * 200)
         self.generate_answer_likes(ratio * 200)
-        print(time.time() - t)
+        # print(time.time() - t)
 
     def generate_tags(self, ratio):
         Tag.objects.all().delete()
