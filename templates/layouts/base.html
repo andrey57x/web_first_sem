@@ -19,7 +19,11 @@
         </div>
 
         <a href="{% url 'ask' %}"><button class="btn btn-outline-success" type="submit">Ask!</button></a>
+        {% if user.is_authenticated %}
         {% include "layouts/registered_profile.html" %}
+        {% else %}
+        {% include "layouts/non_registered_profile.html" %}
+        {% endif %}
     </div>
 </nav>
 <main class="container">

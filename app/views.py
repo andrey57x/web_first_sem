@@ -1,10 +1,17 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.core.paginator import Paginator
+from django.urls import reverse_lazy, reverse
+from django.http import HttpResponseRedirect
+from django.contrib import auth
+
+from app.forms import LoginForm, SignupForm, AskForm, AnswerForm, ProfileEditForm
 from app.models import Question
 from app.models import Answer
 from app.models import Tag
 
 PER_PAGE = 4
+
 
 def paginate(objects_list, request, per_page=10):
     paginator = Paginator(objects_list, per_page)
@@ -35,11 +42,19 @@ def hot(request):
 
 def question(request, question_id):
     question = Question.objects.get(id=question_id)
-    answers = Answer.objects.get_hot().filter(question=question)
-    page = paginate(answers, request, PER_PAGE-1)
+    answers = Answer.objects.get_new().filter(question=question)
+    page = paginate(answers, request, PER_PAGE - 1)
+
+    form = AnswerForm()
+    if request.method == 'POST':
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            answer = form.save(question=question, user=request.user)
+            return HttpResponseRedirect(reverse('question', args=[question.id]))
+
     return render(request, 'question.html',
                   context={'question': question, 'answers': page.object_list, 'page': page,
-                           'tags': Tag.objects.get_popular()})
+                           'tags': Tag.objects.get_popular(), 'form': form})
 
 
 def tag(request, tag_name):
@@ -51,16 +66,53 @@ def tag(request, tag_name):
 
 
 def login(request):
-    return render(request, 'login.html', context={'tags': Tag.objects.get_popular()})
+    form = LoginForm()
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            data = {'username': form.cleaned_data['login'], 'password': form.cleaned_data['password']}
+            user = auth.authenticate(request, **data)
+            if user:
+                auth.login(request, user)
+                return HttpResponseRedirect(request.GET.get('continue', reverse('index')))
+            else:
+                form.add_error('__all__', f'Invalid login or password')
+    return render(request, 'login.html', context={'tags': Tag.objects.get_popular(), 'form': form})
+
+
+def logout(request):
+    auth.logout(request)
+    return HttpResponseRedirect(request.GET.get('continue', reverse('index')))
 
 
 def signup(request):
-    return render(request, 'signup.html', context={'tags': Tag.objects.get_popular()})
+    form = SignupForm()
+    if request.method == 'POST':
+        form = SignupForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            auth.login(request, user)
+            return HttpResponseRedirect(request.GET.get('continue', reverse('index')))
+    return render(request, 'signup.html', context={'tags': Tag.objects.get_popular(), 'form': form})
 
 
+@login_required(redirect_field_name='continue', login_url=reverse_lazy('login'))
 def ask(request):
-    return render(request, 'ask.html', context={'tags': Tag.objects.get_popular()})
+    form = AskForm()
+    if request.method == 'POST':
+        form = AskForm(request.POST)
+        if form.is_valid():
+            question = form.save(user=request.user)
+            return HttpResponseRedirect(reverse('question', args=[question.id]))
+    return render(request, 'ask.html', context={'tags': Tag.objects.get_popular(), 'form': form})
 
 
-def settings(request):
-    return render(request, 'settings.html', context={'tags': Tag.objects.get_popular()})
+@login_required(redirect_field_name='continue', login_url=reverse_lazy('login'))
+def profile_edit(request):
+    form = ProfileEditForm(user=request.user)
+    if request.method == 'POST':
+        form = ProfileEditForm(request.POST, request.FILES, user=request.user)
+        if form.is_valid():
+            form.save(request.user)
+            return HttpResponseRedirect(request.GET.get('continue', reverse('profile.edit')))
+    return render(request, 'profile_edit.html', context={'tags': Tag.objects.get_popular(), 'form': form})

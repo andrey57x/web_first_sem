@@ -44,7 +44,7 @@ class Tag(models.Model):
     @property
     def color(self):
         colors = ["primary", "secondary", "success", "danger", "warning", "info", "light", "dark"]
-        return colors[((hash(self.name)) % (len(colors) + 1)) % len(colors)]
+        return colors[abs(hash(self.name)) % len(colors)]
 
 
 # M-M with Tag, 1-M with Answer, 1-M with User
@@ -99,6 +99,7 @@ class Answer(models.Model):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
     avatar = models.CharField(max_length=100, blank=True, null=True)
+    nickname = models.CharField(max_length=100, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

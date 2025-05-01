@@ -22,15 +22,24 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         ratio = kwargs["ratio"]
         t = time.time()
+        print(t)
         self.generate_tags(ratio)
+        print('tags')
         self.generate_users(ratio)
+        print('users')
         self.generate_profiles(ratio)
+        print('profiles')
         self.generate_questions(ratio * 10)
+        print('questions')
         self.bind_tags_to_questions()
+        print('tags bound')
         self.generate_answers(ratio * 100)
+        print('answers')
         self.generate_question_likes(ratio * 200)
+        print('question likes')
         self.generate_answer_likes(ratio * 200)
-        # print(time.time() - t)
+        print('answer likes')
+        print(time.time() - t)
 
     def generate_tags(self, ratio):
         Tag.objects.all().delete()
@@ -79,7 +88,7 @@ class Command(BaseCommand):
         profiles = []
         users=User.objects.all()
         for user in users:
-            profile = Profile(user=user, avatar=random.choice(["img/kitten.jpg", "img/puppy.jpg"]))
+            profile = Profile(user=user, avatar=random.choice(["img/kitten.jpg", "img/puppy.jpg"]), nickname=self.faker.word())
             profiles.append(profile)
         Profile.objects.bulk_create(profiles)
 

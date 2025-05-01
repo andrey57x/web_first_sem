@@ -1,13 +1,15 @@
 {% extends "layouts/base.html" %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 
 {% block content %}
+    <div class="container">
     {% include "layouts/single_question.html" %}
 
     <hr>
 
-    <section class="questions row gap-3 mb-3">
+    <section class="questions row gap-3 mb-3 m-0">
         {% for answer in answers %}
             {% include "layouts/answer.html" %}
         {% endfor %}
@@ -17,10 +19,8 @@
 
     <hr>
 
-    <section class="your-answer">
-        <div class="mb-3">
-            <textarea class="form-control" placeholder="Enter your answer here..." rows="5"></textarea>
-        </div>
-        <button class="btn btn-primary" type="submit">Answer</button>
-    </section>
+    {% if user.is_authenticated %}
+    {% crispy form %}
+    {% endif %}
+    </div>
 {% endblock %}

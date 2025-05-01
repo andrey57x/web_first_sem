@@ -1,44 +1,16 @@
 {% extends "layouts/base.html" %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class="mb-5">
     <h2>Log In</h2>
 </div>
 
-<form class="col-6">
-    <section class="login mb-3">
-        <div class="row g-3 align-items-center justify-content-between">
-            <div class="col-auto">
-                <label class="col-form-label">Login</label>
-            </div>
-            <div class="col-9">
-                <input type="text" class="form-control" placeholder="Enter your login here...">
-
-            </div>
-        </div>
-    </section>
-
-    <section class="password mb-3">
-        <div class="row g-3 align-items-center justify-content-between">
-            <div class="col-auto">
-                <label class="col-form-label">Password</label>
-            </div>
-            <div class="col-9">
-                <input type="password" class="form-control is-invalid" placeholder="Enter your password here...">
-                <div class="invalid-feedback">
-                    Sorry, wrong password!
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <div class="mb-3">
-        <button class="btn btn-outline-primary offset-3" type="submit">Log in!</button>
-    </div>
-    <div>
-        <a class="new offset-3" href="{% url 'signup' %}">create new account</a>
-    </div>
-</form>
+<div class="col-6">
+    {% csrf_token %}
+    {% crispy form %}
+    <a href="{% url 'signup' %}"><button class="btn btn-secondary">Sign Up</button></a>
+</div>
 
 {% endblock %}

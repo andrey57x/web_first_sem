@@ -3,5 +3,6 @@
 <ol>
 <li>Lab1 - done</li>
 <li>Lab2 - done</li>
-<li>Lab3 - checking</li>
+<li>Lab3 - done</li>
+<li>Lab4 - checking</li>
 </ol>
