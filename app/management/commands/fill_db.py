@@ -45,7 +45,13 @@ class Command(BaseCommand):
         Tag.objects.all().delete()
         tags = []
         for _ in range(ratio):
-            tag = Tag(name=self.faker.word() + "_" + str(random.randint(0, 1000000000)) )
+            flag = False
+            while not flag:
+                try:
+                    tag = Tag(name=self.faker.word() + "_" + str(random.randint(0, 1000000000)))
+                    flag = True
+                except:
+                    flag = False
             tags.append(tag)
         Tag.objects.bulk_create(tags)
         self.faker.unique.clear()
@@ -54,7 +60,13 @@ class Command(BaseCommand):
         User.objects.all().delete()
         users = []
         for _ in range(ratio):
-            user = User(username=self.faker.word() + "_" + str(random.randint(0, 100000000)), email=self.faker.email(), password=self.faker.password(), first_name=self.faker.first_name(), last_name=self.faker.last_name())
+            flag = False
+            while not flag:
+                try:
+                    user = User(username=self.faker.word() + "_" + str(random.randint(0, 100000000)), email=self.faker.email(), password=self.faker.password(), first_name=self.faker.first_name(), last_name=self.faker.last_name())
+                    flag = True
+                except:
+                    flag = False
             users.append(user)
         User.objects.bulk_create(users)
 
@@ -63,7 +75,13 @@ class Command(BaseCommand):
         questions = []
         users = User.objects.all()
         for _ in range(ratio):
-            question = Question(title=self.faker.sentence(nb_words=3) + " " + str(random.randint(0, 1000000000000)), text=self.faker.sentence(), author=random.choice(users))
+            flag = False
+            while not flag:
+                try:
+                    question = Question(title=self.faker.sentence(nb_words=3) + " " + str(random.randint(0, 1000000000000)), text=self.faker.sentence(), author=random.choice(users))
+                    flag = True
+                except:
+                    flag = False
             questions.append(question)
         Question.objects.bulk_create(questions)
 
@@ -79,6 +97,7 @@ class Command(BaseCommand):
         questions = Question.objects.all()
         users = User.objects.all()
         for _ in range(ratio):
+
             answer = Answer(text=self.faker.sentence(nb_words=3), question=random.choice(questions), author=random.choice(users), is_correct=(random.random() > 0.9))
             answers.append(answer)
         Answer.objects.bulk_create(answers)
