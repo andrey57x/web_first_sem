@@ -89,6 +89,9 @@ class Answer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
     @property
     def rating(self):
         r = self.answer_likes.all().aggregate(rating=Sum('value'))['rating']
