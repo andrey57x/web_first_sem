@@ -3,7 +3,7 @@
     <div class="row align-items-center">
       <div class="col-md-2">
         <div class="mb-1" style="height: 100px; width: 100px;">
-          <img src="{% static question.author.profile.avatar %}" class="img-fluid rounded" alt="image">
+          <img src="{{ question.author.profile.avatar.url }}" class="img-fluid rounded" alt="image">
         </div>
         <div>
           <input type="number" class="form-control" style="width: 100px;" value="{{ question.rating }}">

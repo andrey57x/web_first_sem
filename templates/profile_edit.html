@@ -8,8 +8,8 @@
     <h2>{{ user.profile.nickname }}</h2>
 </div>
 
-<div class="col-8">
+<form method="post" enctype="multipart/form-data" class="col-8">
     {% csrf_token %}
     {% crispy form %}
-</div>
+</form>
 {% endblock %}

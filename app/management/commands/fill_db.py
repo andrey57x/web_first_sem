@@ -57,13 +57,15 @@ class Command(BaseCommand):
         self.faker.unique.clear()
 
     def generate_users(self, ratio):
-        User.objects.all().delete()
+        if User.objects.count() > 0:
+            User.objects.all().delete()
         users = []
         for _ in range(ratio):
             flag = False
             while not flag:
                 try:
-                    user = User(username=self.faker.word() + "_" + str(random.randint(0, 100000000)), email=self.faker.email(), password=self.faker.password(), first_name=self.faker.first_name(), last_name=self.faker.last_name())
+                    user = User(username=self.faker.word() + "_" + str(random.randint(0, 100000000)), email=self.faker.email(), first_name=self.faker.first_name(), last_name=self.faker.last_name())
+                    user.set_password(self.faker.password())
                     flag = True
                 except:
                     flag = False
@@ -107,7 +109,7 @@ class Command(BaseCommand):
         profiles = []
         users=User.objects.all()
         for user in users:
-            profile = Profile(user=user, avatar=random.choice(["img/kitten.jpg", "img/puppy.jpg"]), nickname=self.faker.word())
+            profile = Profile(user=user, nickname=self.faker.word())
             profiles.append(profile)
         Profile.objects.bulk_create(profiles)
 

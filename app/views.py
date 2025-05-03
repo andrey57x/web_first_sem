@@ -25,6 +25,17 @@ def paginate(objects_list, request, per_page=10):
     return page
 
 
+def get_answer_position(question, target_answer_id):
+    answers = Answer.objects.get_new().filter(question=question)
+
+    answer_ids = list(answers.values_list('id', flat=True))
+
+    try:
+        return answer_ids.index(target_answer_id)
+    except ValueError:
+        return None
+
+
 # Create your views here.
 
 
@@ -50,7 +61,7 @@ def question(request, question_id):
         form = AnswerForm(request.POST)
         if form.is_valid():
             answer = form.save(question=question, user=request.user)
-            return HttpResponseRedirect(reverse('question', args=[question.id]))
+            return HttpResponseRedirect(reverse('question', args=[question.id])+'?page='+str(get_answer_position(question, answer.id) // (PER_PAGE - 1) + 1))
 
     return render(request, 'question.html',
                   context={'question': question, 'answers': page.object_list, 'page': page,
@@ -88,7 +99,7 @@ def logout(request):
 def signup(request):
     form = SignupForm()
     if request.method == 'POST':
-        form = SignupForm(request.POST)
+        form = SignupForm(request.POST, request.FILES)
         if form.is_valid():
             user = form.save()
             auth.login(request, user)

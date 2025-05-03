@@ -1,7 +1,7 @@
 {% load static %}
 <div class="profile d-flex align-items-center gap-2">
   <div style="height: 50px; width: 50px;">
-    <img src="{% static user.profile.avatar %}" class="img-fluid rounded" alt="img">
+    <img src="{{ user.profile.avatar.url }}" class="img-fluid rounded" alt="img">
   </div>
   <div class="profile-content">
     <div class="profile-name">{{ user.profile.nickname }}</div>

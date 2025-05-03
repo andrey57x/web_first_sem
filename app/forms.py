@@ -28,8 +28,10 @@ class LoginForm(forms.Form):
     def clean(self):
         login = self.cleaned_data.get('login')
         password = self.cleaned_data.get('password')
-        if not login or not password:
-            raise forms.ValidationError('Please enter login and password')
+        if not login:
+            self.add_error('login', 'Please enter login')
+        if not password:
+            self.add_error('password', 'Please enter password')
         return self.cleaned_data
 
 
@@ -58,8 +60,16 @@ class SignupForm(forms.Form):
         nickname = self.cleaned_data.get('nickname')
         password = self.cleaned_data.get('password')
         repeat_password = self.cleaned_data.get('repeat_password')
-        if not username or not email or not nickname or not password or not repeat_password:
-            raise forms.ValidationError('Please enter username, email, nickname, password and repeat password')
+        if not username:
+            self.add_error('username', 'Please enter username')
+        if not email:
+            self.add_error('email', 'Please enter email')
+        if not nickname:
+            self.add_error('nickname', 'Please enter nickname')
+        if not password:
+            self.add_error('password', 'Please enter password')
+        if not repeat_password:
+            self.add_error('repeat_password', 'Please repeat password')
         if password != repeat_password:
             raise forms.ValidationError('Passwords do not match')
         if User.objects.filter(username=username).exists():
@@ -70,8 +80,7 @@ class SignupForm(forms.Form):
         user = User(username=self.cleaned_data.get('username'), email=self.cleaned_data.get('email'))
         user.set_password(self.cleaned_data.get('password'))
         user.save()
-        profile = Profile(user=user, nickname=self.cleaned_data.get('nickname'))
-        profile.avatar = random.choice(['img/kitten.jpg', 'img/puppy.jpg', 'img/fox.jpg'])
+        profile = Profile(user=user, nickname=self.cleaned_data.get('nickname'), avatar=self.cleaned_data.get('avatar'))
         profile.save()
         return user
 
@@ -101,8 +110,12 @@ class AskForm(forms.Form):
         title = self.cleaned_data.get('title')
         text = self.cleaned_data.get('text')
         tags = self.parse_tags()
-        if not title or not text or not tags:
-            raise forms.ValidationError('Please enter title, text and tags')
+        if not title:
+            self.add_error('title', 'Please enter title')
+        if not text:
+            self.add_error('text', 'Please enter text')
+        if not tags:
+            self.add_error('tags', 'Please enter tags')
         if len(tags) > 3:
             self.add_error('tags', 'Too many tags (more then 3).')
         if Question.objects.filter(title=title).exists():
@@ -176,8 +189,13 @@ class ProfileEditForm(forms.Form):
         username = self.cleaned_data.get('login')
         email = self.cleaned_data.get('email')
         nickname = self.cleaned_data.get('nickname')
-        if not username or not email or not nickname:
-            raise forms.ValidationError('Please enter login, email and nickname')
+
+        if not username:
+            self.add_error('login', 'Please enter username')
+        if not email:
+            self.add_error('email', 'Please enter email')
+        if not nickname:
+            self.add_error('nickname', 'Please enter nickname')
         if User.objects.filter(username=username).exists() and username != self.fields['login'].initial:
             self.add_error('login', 'Username already exists')
         return self.cleaned_data

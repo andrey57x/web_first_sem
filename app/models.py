@@ -90,7 +90,7 @@ class Answer(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['-created_at']
+        ordering = ['-is_correct','-created_at']
 
     @property
     def rating(self):
@@ -101,7 +101,12 @@ class Answer(models.Model):
 # 1-1 with User
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    avatar = models.CharField(max_length=100, blank=True, null=True)
+    avatar = models.ImageField(
+        upload_to='avatars/',
+        blank=True,
+        null=True,
+        default='avatars/default.jpg'
+    )
     nickname = models.CharField(max_length=100, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
