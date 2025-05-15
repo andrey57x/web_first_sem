@@ -205,6 +205,10 @@ class ProfileEditForm(forms.Form):
         user.email = self.cleaned_data.get('email')
         user.save()
         user.profile.nickname = self.cleaned_data.get('nickname')
-        user.profile.avatar = self.cleaned_data.get('avatar')
+        avatar = self.cleaned_data.get('avatar')
+        if avatar:
+            user.profile.avatar = avatar
+        else:
+            user.profile.avatar = Profile._meta.get_field('avatar').get_default()
         user.profile.save()
         return user

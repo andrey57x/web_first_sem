@@ -26,7 +26,7 @@ class AnswerManager(models.Manager):
         return super().all()
 
     def get_hot(self):
-        return self.annotate(popularity=Coalesce(Sum('answer_likes__value'), Value(0))).order_by('-popularity')
+        return self.annotate(popularity=Coalesce(Sum('answer_likes__value'), Value(0))).order_by('-is_correct','-popularity','-created_at')
 
 
 # M-M with Question
@@ -115,10 +115,14 @@ class Profile(models.Model):
 
 # 1-M with Question, 1-1 with User
 class QuestionLike(models.Model):
+    RATING_CHOICES = [
+        (1, 'Like'),
+        (-1, 'Dislike'),
+    ]
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='question_likes', db_index=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    value = models.IntegerField(default=0, db_index=True)
+    value = models.IntegerField(choices=RATING_CHOICES, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -126,16 +130,20 @@ class QuestionLike(models.Model):
     class Meta:
         unique_together = ('question', 'user')
         constraints = [
-            models.CheckConstraint(check=models.Q(value__gte=-1) & models.Q(value__lte=1), name='question_value_check'),
+            models.CheckConstraint(check=models.Q(value__in=[1, -1]), name='question_like_value_check'),
         ]
 
 
 # 1-M with Answer, 1-1 with User
 class AnswerLike(models.Model):
+    RATING_CHOICES = [
+        (1, 'Like'),
+        (-1, 'Dislike'),
+    ]
     answer = models.ForeignKey(Answer, on_delete=models.CASCADE, related_name='answer_likes')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
-    value = models.IntegerField(default=0, db_index=True)
+    value = models.SmallIntegerField(choices=RATING_CHOICES, db_index=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -143,5 +151,5 @@ class AnswerLike(models.Model):
     class Meta:
         unique_together = ('answer', 'user')
         constraints = [
-            models.CheckConstraint(check=models.Q(value__gte=-1) & models.Q(value__lte=1), name='answer_value_check'),
+            models.CheckConstraint(check=models.Q(value__in=[1, -1]), name='answer_like_value_check'),
         ]
