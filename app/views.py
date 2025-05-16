@@ -106,6 +106,8 @@ def tag(request, tag_name):
     tag = Tag.objects.get(name=tag_name)
     questions = Question.objects.filter(tags=tag)
     page = paginate(questions, request, PER_PAGE)
+    for question in page.object_list:
+        question.current_like = get_question_like(question, request.user)
     return render(request, 'tag.html', context={'tag': tag,
                                                 'questions': page.object_list, 'page': page, 'tags': Tag.objects.get_popular()})
 
