@@ -9,11 +9,12 @@
 
     <hr>
 
-    <section class="questions row gap-3 mb-3 m-0">
+    <section id="answers" class=" row gap-3 mb-3 m-0">
         {% for answer in answers %}
             {% include "layouts/answer.html" %}
         {% endfor %}
     </section>
+    {% include "layouts/answer_template.html" %}
 
     {% include "layouts/pagination.html" %}
 
@@ -23,4 +24,64 @@
     {% crispy form %}
     {% endif %}
     </div>
+<script type="module" src="{% static 'scripts/answer_likes.js' %}"></script>
+<script type="module" src="{% static 'scripts/correct_answers.js' %}"></script>
+<script src="https://unpkg.com/centrifuge@5.2.2/dist/centrifuge.js"></script>
+<script>
+    const CENTRIFUGO_TOKEN = "{{token}}";
+    const CENTRIFUGO_URL = "{{ws_url}}";
+    const QUESTION_CHANNEL = "{{ws_channel}}";
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const centrifuge = new Centrifuge(`ws://${CENTRIFUGO_URL}/connection/websocket`, {
+      token: CENTRIFUGO_TOKEN
+    });
+
+    centrifuge.on('connecting', function (ctx) {
+      console.log(`connecting: ${ctx.code}, ${ctx.reason}`);
+    }).on('connected', function (ctx) {
+      console.log(`connected over ${ctx.transport}`);
+    }).on('disconnected', function (ctx) {
+      console.log(`disconnected: ${ctx.code}, ${ctx.reason}`);
+    }).connect();
+
+    const sub = centrifuge.newSubscription(QUESTION_CHANNEL);
+
+    const answer_container = document.getElementById("answers");
+    const answer_template = document.querySelector('[data-search="answer-template"]');
+
+    sub.on('publication', function (ctx) {
+      const { id, url, text, author_id } =ctx.data;
+
+      const new_answer = answer_template.cloneNode(true);
+      new_answer.querySelector('[data-search="answer-template-avatar"]').src = url;
+      new_answer.querySelectorAll('[data-search="answer-template-likebutton"]').forEach(btn => {
+        btn.setAttribute('data-answer-id', id);
+      });
+      new_answer.querySelector('[data-search="answer-template-text"]').textContent = text;
+      new_answer.querySelector('[data-search="answer-template-label"]').setAttribute('for', `flexCheckDefault${id}`);
+      new_answer.querySelector('[data-search="answer-template-likecounter"]').setAttribute('data-answer-like-counter', id);
+
+      const checkbox = new_answer.querySelector('[data-search="answer-template-checkbox"]');
+      checkbox.setAttribute('data-answer-id', id);
+      checkbox.setAttribute('id', `flexCheckDefault${id}`);
+
+      new_answer.classList.remove("d-none");
+      answer_container.insertBefore(new_answer, answer_container.firstChild);
+      answer_container.removeChild(answer_container.lastElementChild);
+
+      if ({{ request.user.id }} !== author_id) {
+        checkbox.style.pointerEvents = 'none';
+    }
+
+    }).on('subscribing', function (ctx) {
+      console.log(`subscribing: ${ctx.code}, ${ctx.reason}`);
+    }).on('subscribed', function (ctx) {
+      console.log('subscribed', ctx);
+    }).on('unsubscribed', function (ctx) {
+      console.log(`unsubscribed: ${ctx.code}, ${ctx.reason}`);
+    }).subscribe();
+})
+
+</script>
 {% endblock %}

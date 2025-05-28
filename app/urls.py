@@ -13,5 +13,5 @@ urlpatterns = [
     path('logout/', views.logout, name='logout'),
     path('question/<int:question_id>/like', views.question_like, name='question.like'),
     path('answer/<int:answer_id>/correct', views.answer_correct, name='answer.correct'),
-    path('answer/<int:answer_id>/like', views.answer_like, name='answer.like')
+    path('answer/<int:answer_id>/like', views.answer_like, name='answer.like'),
 ]

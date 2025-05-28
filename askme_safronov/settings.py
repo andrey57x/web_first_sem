@@ -37,9 +37,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'app',
     'crispy_forms',
-    'crispy_bootstrap5'
+    'crispy_bootstrap5',
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -127,10 +128,10 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'static'
-if DEBUG:
-    STATICFILES_DIRS = [
-        BASE_DIR / "static"
-    ]
+# if DEBUG:
+#     STATICFILES_DIRS = [
+#         BASE_DIR / "static"
+#     ]
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -138,3 +139,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CENTRIFUGO_HMAC_SECRET = "secret"
+CENTRIFUGO_API_KEY = "secret"
+CENTRIFUGO_URL = "localhost:8010"
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+        "LOCATION": r"D:\University\VK\WEB_tech\first_sem\cache",
+    }
+}

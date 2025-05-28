@@ -1,9 +1,11 @@
+from django.contrib.postgres.indexes import GinIndex
+from django.contrib.postgres.search import SearchVectorField, SearchVector
 from django.db import models
 from django.db.models import Sum, Value, Count
 from django.db.models.functions import Coalesce
 from django.contrib.auth.models import User
-
-HOT_TAGS_NUMBER = 8
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 
 # Create your models here.
@@ -16,11 +18,6 @@ class QuestionManager(models.Manager):
         return self.annotate(popularity=Coalesce(Sum('question_likes__value'), Value(0))).order_by('-popularity')
 
 
-class TagManager(models.Manager):
-    def get_popular(self):
-        return self.annotate(popularity=Coalesce(Count('questions'), Value(0))).order_by('-popularity')[:HOT_TAGS_NUMBER]
-
-
 class AnswerManager(models.Manager):
     def get_new(self):
         return super().all()
@@ -31,7 +28,6 @@ class AnswerManager(models.Manager):
 
 # M-M with Question
 class Tag(models.Model):
-    objects = TagManager()
 
     name = models.CharField(max_length=100, unique=True)
 
@@ -60,6 +56,8 @@ class Question(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    search_vector = SearchVectorField(null=True, blank=True)
+
     @property
     def rating(self):
         r = self.question_likes.all().aggregate(rating=Sum('value'))['rating']
@@ -71,6 +69,9 @@ class Question(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        indexes = [
+            GinIndex(fields=['search_vector'], name='question_search_idx')
+        ]
 
     def __str__(self):
         return self.title
@@ -90,7 +91,7 @@ class Answer(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ['-is_correct','-created_at']
+        ordering = ['-created_at']
 
     @property
     def rating(self):
@@ -153,3 +154,10 @@ class AnswerLike(models.Model):
         constraints = [
             models.CheckConstraint(check=models.Q(value__in=[1, -1]), name='answer_like_value_check'),
         ]
+
+@receiver(post_save, sender=Question)
+def update_question_search_vector(sender, instance, **kwargs):
+    # Обновление поискового вектора при сохранении
+    Question.objects.filter(pk=instance.pk).update(
+        search_vector=SearchVector('title', 'text')
+    )

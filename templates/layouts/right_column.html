@@ -1,0 +1,19 @@
+<section class="tags mb-3">
+    <h3>Popular Tags</h3>
+    <div>
+        {% for tag in popular_tags %}
+        <a href="{% url 'tag' tag.name%}"><span class="badge btn text-bg-{{tag.color}}">{{ tag.name }}</span></a>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="members">
+    <h3>Best Members</h3>
+    <div>
+        <ol class="list-group list-group-numbered">
+            {% for user in top_users  %}
+            <li class="list-group-item ml-1">{{ user.profile.nickname }}</li>
+            {% endfor %}
+        </ol>
+    </div>
+</section>
